@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @Getter
 @Setter
-@RequestMapping("/api/qua-board")
+@RequestMapping("/api/qna-board")
 public class QnABoardController {
 
     private final QnABoardRepository repository;
@@ -25,12 +25,12 @@ public class QnABoardController {
 
     @GetMapping
     public List<QnABoard> list() {
-        return repository.findAll(Sort.by(Sort.Direction.DESC, "createAt"));
+        return repository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
     @PostMapping
     public QnABoard create(@RequestBody QnABoard board) {
-        board.setCreateAt(LocalDateTime.now());
+        board.setCreatedAt(LocalDateTime.now());
         return repository.save(board);
     }
 

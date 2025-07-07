@@ -27,7 +27,7 @@ public class CommentController {
     public Comment addComment(@PathVariable("boardType") String boardType,@PathVariable int boardId, @RequestBody Comment comment) {
         comment.setBoardType(boardType);
         comment.setBoardId(boardId);
-        comment.setCreateAt(LocalDateTime.now());
+        comment.setCreatedAt(LocalDateTime.now());
         return repository.save(comment);
     }
 }

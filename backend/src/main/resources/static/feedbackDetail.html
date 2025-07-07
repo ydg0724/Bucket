@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>게시글 상세보기</title>
+  <title>운동 피드백 상세보기</title>
+  <link rel="stylesheet" href="css/common.css">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -31,6 +32,16 @@
       border-radius: 8px;
       cursor: pointer;
       margin-top: 10px;
+      margin-right: 10px;
+    }
+    .delete-btn {
+      background-color: #e63946;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
     }
     .comment-section {
       margin-top: 30px;
@@ -44,7 +55,7 @@
     <a href="index.html" class="nav-logo">HomePT</a>
     <ul class="nav-menu">
       <li><a href="index.html">메인화면</a></li>
-      <li><a href="QnABoard.html">Q&A 게시판</a></li>
+      <li><a href="qnaBoard.html">Q&A 게시판</a></li>
       <li><a href="feedbackBoard.html">피드백 게시판</a></li>
     </ul>
     <button id="loginBtn" class="login-button">로그인</button>
@@ -53,6 +64,11 @@
 
 <h1>운동 피드백 상세보기</h1>
 <div class="content" id="detailContent"></div>
+
+<div>
+  <button class="back-btn" onclick="editPost()">수정</button>
+  <button class="delete-btn" onclick="deletePost()">삭제</button>
+</div>
 
 <div class="comment-section">
   <h3>댓글</h3>
@@ -67,7 +83,6 @@
 <script>
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
-
   let currentUid = null;
 
   async function fetchCurrentUid() {
@@ -79,16 +94,14 @@
       if (res.ok) {
         const user = await res.json();
         currentUid = user.uid;
-        console.log("현재 로그인 uid:", currentUid);
       } else {
-        currentUid = null; // 로그인 안되어 있을 때 null 유지
+        currentUid = null;
       }
     } catch (err) {
       console.error('uid 불러오기 실패', err);
       currentUid = null;
     }
   }
-
 
   fetch(`/api/feedback-board`)
           .then(res => res.json())
@@ -101,12 +114,12 @@
             }
             const detail = document.getElementById('detailContent');
             detail.innerHTML = `
-            <h2>${post.title}</h2>
-            <p><b>운동 종류:</b> ${post.exerciseType}</p>
-            <p><b>작성자:</b> ${post.uid}</p>
-            <p style="margin-top: 20px;">${post.content}</p>
-            ${post.videoUrl ? `<p><a href="${post.videoUrl}" target="_blank">영상 보기</a></p>` : ''}
-        `;
+      <h2>${post.title}</h2>
+      <p><b>운동 종류:</b> ${post.exerciseType}</p>
+      <p><b>작성자:</b> ${post.username}</p>
+      <p style="margin-top: 20px;">${post.content}</p>
+      ${post.videoUrl ? `<p><a href="${post.videoUrl}" target="_blank">영상 보기</a></p>` : ''}
+    `;
           });
 
   function loadComments() {
@@ -118,18 +131,18 @@
               data.forEach(c => {
                 const div = document.createElement('div');
                 div.style.marginBottom = '10px';
-                div.innerHTML = `<b>${c.uid}:</b> ${c.content}`;
+                div.innerHTML = `<b>${c.username}:</b> ${c.content}
+          <button style="margin-left:10px;" onclick="deleteComment(${c.id})">삭제</button>`;
                 list.appendChild(div);
               });
             });
   }
 
   function addComment() {
-    if(!currentUid){
+    if (!currentUid) {
       alert("댓글 작성은 로그인 후 이용 가능합니다.");
       return;
     }
-
     const content = document.getElementById('commentContent').value;
     if (!content) {
       alert('댓글을 입력하세요.');
@@ -146,6 +159,66 @@
             });
   }
 
+  function deleteComment(commentId) {
+    if (!confirm('댓글을 삭제하시겠습니까?')) return;
+    fetch(`/api/comments/${commentId}`, { method: 'DELETE' })
+            .then(() => loadComments());
+  }
+
+  function deletePost() {
+    if (!confirm('게시글을 삭제하시겠습니까?')) return;
+    fetch(`/api/feedback-board/${id}`, { method: 'DELETE' })
+            .then(res => {
+              if (res.ok) {
+                alert('삭제 완료');
+                location.href = 'feedbackBoard.html';
+              } else {
+                alert('삭제 실패');
+              }
+            });
+  }
+
+  function editPost() {
+    location.href = `writeFeedback.html?id=${id}`;
+  }
+
+  const loginBtn = document.getElementById("loginBtn");
+
+  async function checkLoginStatus(){
+    try{
+      const res = await fetch('/api/user/me',{
+        method: 'GET',
+        credentials: 'include'
+      });
+      if(res.ok){
+        loginBtn.textContent = '로그아웃';
+        loginBtn.onclick = handleLogout;
+      }else{
+        loginBtn.textContent='로그인';
+        loginBtn.onclick = () => location.href = 'login.html'
+      }
+    }catch (error){
+      console.error('로그인 상태 확인 실패',error);
+    }
+  }
+
+  async function handleLogout() {
+    try {
+      const res = await fetch('/api/user/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      if (res.ok) {
+        alert('로그아웃 되었습니다.');
+        loginBtn.textContent = '로그인';
+        loginBtn.onclick = () => location.href = 'login.html';
+      }
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+    }
+  }
+
+  window.addEventListener("DOMContentLoaded",checkLoginStatus)
   fetchCurrentUid();
   loadComments();
 </script>

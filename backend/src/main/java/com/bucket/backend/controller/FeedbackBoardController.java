@@ -21,7 +21,7 @@ public class FeedbackBoardController {
 
     @GetMapping
     public List<FeedbackBoard> list() {
-        return repository.findAll(Sort.by(Sort.Direction.DESC, "createAt"));
+        return repository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
     @PostMapping FeedbackBoard create(@RequestBody FeedbackBoard board) {

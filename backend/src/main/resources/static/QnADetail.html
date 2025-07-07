@@ -56,6 +56,12 @@
 <h1>질문 상세보기</h1>
 <div class="content" id="detailContent"></div>
 
+<div style="margin-top: 20px;">
+  <button class="back-btn" onclick="editPost()">수정</button>
+  <button class="back-btn" style="background-color:#e63946;" onclick="deletePost()">삭제</button>
+</div>
+
+
 <div class="comment-section">
   <h3>댓글</h3>
   <div id="commentList" style="margin-bottom: 20px;"></div>
@@ -104,7 +110,7 @@
             const detail = document.getElementById('detailContent');
             detail.innerHTML = `
             <h2>${post.title}</h2>
-            <p><b>작성자:</b> ${post.uid}</p>
+            <p><b>작성자:</b> ${post.username}</p>
             <p style="margin-top: 20px;">${post.content}</p>
         `;
           });
@@ -118,7 +124,7 @@
               data.forEach(c => {
                 const div = document.createElement('div');
                 div.style.marginBottom = '10px';
-                div.innerHTML = `<b>${c.uid}:</b> ${c.content}`;
+                div.innerHTML = `<b>${c.username}:</b> ${c.content}`;
                 list.appendChild(div);
               });
             });
@@ -138,13 +144,77 @@
     fetch(`/api/comments/QNA/${id}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ uid: 'testUid', content })
+      body: JSON.stringify({ uid: currentUid, content })
     })
             .then(() => {
               document.getElementById('commentContent').value = '';
               loadComments();
             });
   }
+
+  const loginBtn = document.getElementById("loginBtn");
+
+  async function checkLoginStatus(){
+    try{
+      const res = await fetch('/api/user/me',{
+        method: 'GET',
+        credentials: 'include'
+      });
+      //로그인된 상태일 때
+      if(res.ok){
+        loginBtn.textContent = '로그아웃';
+        loginBtn.onclick = handleLogout;
+      }else{
+        //로그인이 안된 상태일 때
+        loginBtn.textContent='로그인';
+        loginBtn.onclick = () => window.location.href = 'login.html'
+      }
+    }catch (error){
+      console.error('로그아웃 실패',error);
+    }
+  }
+
+  // 로그아웃 처리
+  async function handleLogout() {
+    try {
+      const res = await fetch('/api/user/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      if (res.ok) {
+        alert('로그아웃 되었습니다.');
+        loginBtn.textContent = '로그인';
+        loginBtn.onclick = () => window.location.href = 'login.html';
+      }
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+    }
+  }
+
+  function deletePost() {
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+
+    fetch(`/api/qna-board/${id}`, {  // QnA는 qna-board로 변경
+      method: 'DELETE'
+    })
+            .then(res => {
+              if (res.ok) {
+                alert('삭제 완료');
+                location.href = 'QnABoard.html';  // QnA는 qnaBoard.html
+              } else {
+                alert('삭제 실패');
+              }
+            });
+  }
+
+  function editPost() {
+    location.href = `writeFeedback.html?id=${id}`;  // QnA는 writeQna.html
+  }
+
+
+  //페이지 로딩 시 로그인 상태 확인
+  window.addEventListener("DOMContentLoaded",checkLoginStatus)
+
   fetchCurrentUid();
   loadComments();
 </script>

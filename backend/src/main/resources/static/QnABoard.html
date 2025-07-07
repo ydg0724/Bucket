@@ -90,6 +90,71 @@
             });
     }
 
+    const loginBtn = document.getElementById("loginBtn");
+
+    async function checkLoginStatus(){
+        try{
+            const res = await fetch('/api/user/me',{
+                method: 'GET',
+                credentials: 'include'
+            });
+            //로그인된 상태일 때
+            if(res.ok){
+                loginBtn.textContent = '로그아웃';
+                loginBtn.onclick = handleLogout;
+            }else{
+                //로그인이 안된 상태일 때
+                loginBtn.textContent='로그인';
+                loginBtn.onclick = () => window.location.href = 'login.html'
+            }
+        }catch (error){
+            console.error('로그아웃 실패',error);
+        }
+    }
+
+    // 로그아웃 처리
+    async function handleLogout() {
+        try {
+            const res = await fetch('/api/user/logout', {
+                method: 'POST',
+                credentials: 'include'
+            });
+            if (res.ok) {
+                alert('로그아웃 되었습니다.');
+                loginBtn.textContent = '로그인';
+                loginBtn.onclick = () => window.location.href = 'login.html';
+            }
+        } catch (error) {
+            console.error('로그아웃 실패:', error);
+        }
+    }
+
+    //페이지 로딩 시 로그인 상태 확인
+    window.addEventListener("DOMContentLoaded",checkLoginStatus)
+
+    let currentUid = null;
+
+    // 페이지 로드시 uid를 서버에서 fetch
+    window.onload = () => {
+
+        fetch("/api/user/me", {
+            method: "GET",
+            credentials: "include"  // 세션 쿠키 포함 필수
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("로그인이 필요합니다");
+                return res.json();
+            })
+            .then(user => {
+                currentUid = user.uid;
+                console.log("현재 로그인된 사용자 uid:", currentUid);
+            })
+            .catch(err => {
+                console.error('uid 불러오기 실패', err);
+                currentUid = null;
+            });
+    };
+
     loadPosts();
 </script>
 

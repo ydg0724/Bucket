@@ -111,7 +111,7 @@
         fetch('/api/feedback-board', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ title, content, exerciseType, uid: 'testUser', videoUrl })
+            body: JSON.stringify({ title, content, exerciseType, uid: currentUid, videoUrl })
         })
             .then(() => {
                 alert('등록이 완료되었습니다.');
@@ -122,6 +122,29 @@
                 alert('등록 중 오류가 발생했습니다.');
             });
     }
+    let currentUid = null;
+
+    // 페이지 로드시 uid를 서버에서 fetch
+    window.onload = () => {
+
+        fetch("/api/user/me", {
+            method: "GET",
+            credentials: "include"  // 세션 쿠키 포함 필수
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("로그인이 필요합니다");
+                return res.json();
+            })
+            .then(user => {
+                currentUid = user.uid;
+                console.log("현재 로그인된 사용자 uid:", currentUid);
+            })
+            .catch(err => {
+                alert("로그인이 필요합니다.");
+                window.location.href = "/login.html";
+            });
+    };
+
 </script>
 </body>
 </html>
