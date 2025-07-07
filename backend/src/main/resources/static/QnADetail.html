@@ -30,6 +30,10 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      margin-top: 10px;
+    }
+    .comment-section {
+      margin-top: 30px;
     }
   </style>
 </head>
@@ -37,11 +41,42 @@
 
 <h1>질문 상세보기</h1>
 <div class="content" id="detailContent"></div>
+
+<div class="comment-section">
+  <h3>댓글</h3>
+  <div id="commentList" style="margin-bottom: 20px;"></div>
+
+  <textarea id="commentContent" rows="3" style="width:100%; margin-bottom: 10px;" placeholder="댓글을 입력하세요"></textarea>
+  <button class="back-btn" onclick="addComment()">댓글 등록</button>
+</div>
+
 <button class="back-btn" onclick="history.back()">뒤로가기</button>
 
 <script>
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
+
+  let currentUid = null;
+
+  async function fetchCurrentUid() {
+    try {
+      const res = await fetch('/api/user/me', {
+        method: 'GET',
+        credentials: 'include'
+      });
+      if (res.ok) {
+        const user = await res.json();
+        currentUid = user.uid;
+        console.log("현재 로그인 uid:", currentUid);
+      } else {
+        currentUid = null; // 로그인 안되어 있을 때 null 유지
+      }
+    } catch (err) {
+      console.error('uid 불러오기 실패', err);
+      currentUid = null;
+    }
+  }
+
 
   fetch(`/api/qna-board`)
           .then(res => res.json())
@@ -55,10 +90,49 @@
             const detail = document.getElementById('detailContent');
             detail.innerHTML = `
             <h2>${post.title}</h2>
-            <p><b>작성자:</b> ${post.userId}</p>
+            <p><b>작성자:</b> ${post.uid}</p>
             <p style="margin-top: 20px;">${post.content}</p>
         `;
           });
+
+  function loadComments() {
+    fetch(`/api/comments/QNA/${id}`)
+            .then(res => res.json())
+            .then(data => {
+              const list = document.getElementById('commentList');
+              list.innerHTML = '';
+              data.forEach(c => {
+                const div = document.createElement('div');
+                div.style.marginBottom = '10px';
+                div.innerHTML = `<b>${c.uid}:</b> ${c.content}`;
+                list.appendChild(div);
+              });
+            });
+  }
+
+  function addComment() {
+    if (!currentUid){
+      alert("댓글 작성은 로그인 후 이용 가능합니다.");
+      return;
+    }
+
+    const content = document.getElementById('commentContent').value;
+    if (!content) {
+      alert('댓글을 입력하세요.');
+      return;
+    }
+    fetch(`/api/comments/QNA/${id}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ uid: 'testUid', content })
+    })
+            .then(() => {
+              document.getElementById('commentContent').value = '';
+              loadComments();
+            });
+  }
+  fetchCurrentUid();
+  loadComments();
 </script>
 
 </body>

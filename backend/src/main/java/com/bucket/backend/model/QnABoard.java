@@ -18,7 +18,7 @@ public class QnABoard {
     @GeneratedValue
     private int id;
 
-    private String userId;
+    private int uid;
     private String title;
 
     @Column(columnDefinition = "TEXT")

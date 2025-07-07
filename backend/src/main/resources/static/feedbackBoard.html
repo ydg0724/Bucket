@@ -51,6 +51,8 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
     </style>
+    <link rel="stylesheet" href="css/navbar.css">
+
 </head>
 <body>
 
@@ -69,7 +71,7 @@
                 data.forEach(post => {
                     const div = document.createElement('div');
                     div.className = 'post-item';
-                    div.innerHTML = `<b>[${post.exerciseType}] ${post.title}</b> - ${post.userId}`;
+                    div.innerHTML = `<b>[${post.exerciseType}] ${post.title}</b> - ${post.uid}`;
                     div.onclick = () => location.href = `feedbackDetail.html?id=${post.id}`;
                     list.appendChild(div);
                 });

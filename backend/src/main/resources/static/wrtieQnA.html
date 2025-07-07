@@ -93,7 +93,7 @@
         fetch('/api/qna-board', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ title, content, userId: 'testUser' })
+            body: JSON.stringify({ title, content, uid: 'testUser' })
         })
             .then(() => {
                 alert('등록이 완료되었습니다.');
