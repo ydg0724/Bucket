@@ -24,5 +24,5 @@ public class QnABoard {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 }
