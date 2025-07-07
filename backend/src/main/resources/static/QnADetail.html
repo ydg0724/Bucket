@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>질문 상세보기</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1a1a2e;
+      color: #f8f9fa;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #8338ec;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .content {
+      background-color: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .back-btn {
+      background-color: #8338ec;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>질문 상세보기</h1>
+<div class="content" id="detailContent"></div>
+<button class="back-btn" onclick="history.back()">뒤로가기</button>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+
+  fetch(`/api/qna-board`)
+          .then(res => res.json())
+          .then(data => {
+            const post = data.find(p => p.id == id);
+            if (!post) {
+              alert('게시글을 찾을 수 없습니다.');
+              history.back();
+              return;
+            }
+            const detail = document.getElementById('detailContent');
+            detail.innerHTML = `
+            <h2>${post.title}</h2>
+            <p><b>작성자:</b> ${post.userId}</p>
+            <p style="margin-top: 20px;">${post.content}</p>
+        `;
+          });
+</script>
+
+</body>
+</html>

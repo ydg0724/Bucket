@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>글 작성 - 운동 피드백 게시판</title>
+    <style>
+        :root {
+            --primary-color: #3a86ff;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        .post-form {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .post-form input,
+        .post-form textarea {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            border: none;
+            font-size: 1rem;
+        }
+
+        .post-form button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .post-form button:hover {
+            background-color: #2a75e6;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>피드백 작성</h1>
+
+    <div class="post-form">
+        <input id="title" placeholder="제목">
+        <input id="exerciseType" placeholder="운동 종류 (예: PUSHUP)">
+        <textarea id="content" rows="4" placeholder="내용"></textarea>
+        <input id="videoUrl" placeholder="영상 URL (선택)">
+        <button onclick="createPost()">등록</button>
+    </div>
+</div>
+
+<script>
+    function createPost() {
+        const title = document.getElementById('title').value;
+        const exerciseType = document.getElementById('exerciseType').value;
+        const content = document.getElementById('content').value;
+        const videoUrl = document.getElementById('videoUrl').value;
+
+        if (!title || !exerciseType || !content) {
+            alert('제목, 운동 종류, 내용을 모두 입력하세요.');
+            return;
+        }
+
+        fetch('/api/feedback-board', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ title, content, exerciseType, userId: 'testUser', videoUrl })
+        })
+            .then(() => {
+                alert('등록이 완료되었습니다.');
+                location.href = 'feedbackBoard.html';
+            })
+            .catch(err => {
+                console.error('등록 실패:', err);
+                alert('등록 중 오류가 발생했습니다.');
+            });
+    }
+</script>
+</body>
+</html>

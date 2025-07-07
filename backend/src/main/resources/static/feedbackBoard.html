@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>운동 피드백 게시판</title>
+    <style>
+        :root {
+            --primary-color: #3a86ff;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --border-radius: 8px;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+        .post-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .post-item {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .post-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+<h1>운동 피드백 게시판</h1>
+<div class="post-list" id="postList"></div>
+
+<button class="fab" onclick="location.href='writeFeedback.html'">글쓰기</button>
+
+<script>
+    function loadPosts() {
+        fetch('/api/feedback-board')
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('postList');
+                list.innerHTML = '';
+                data.forEach(post => {
+                    const div = document.createElement('div');
+                    div.className = 'post-item';
+                    div.innerHTML = `<b>[${post.exerciseType}] ${post.title}</b> - ${post.userId}`;
+                    div.onclick = () => location.href = `feedbackDetail.html?id=${post.id}`;
+                    list.appendChild(div);
+                });
+            });
+    }
+
+    loadPosts();
+</script>
+
+</body>
+</html>
