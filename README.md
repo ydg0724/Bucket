@@ -3,8 +3,8 @@
 # 앱이름: HomePT
 
 ## 📖 프로젝트 개요
-스마트 글래스를 활용하여 사용자의 운동 자세를 실시간으로 분석하고 피드백을 제공하는 피트니스 보조 서비스입니다.
-본 프로젝트는 사용자가 강의 영상과 자신의 운동 자세를 비교할 수 있도록 하며, 올바른 자세 정보를 제공하여 운동 자세 교정에 도움을 줍니다.
+사용자의 운동 자세를 실시간으로 분석하고 피드백을 제공하는 피트니스 보조 서비스입니다.
+본 프로젝트는 사용자가 올바른 자세와 자신의 운동 자세를 비교할 수 있도록 하며, 올바른 자세 정보를 제공하여 운동 자세 교정에 도움을 줍니다.
 
 ## 📁 개발 시스템 구성도
 ![image](https://github.com/user-attachments/assets/f4ee0d89-bdbd-4022-9d9a-6150b1bf4875)
@@ -62,17 +62,9 @@
   </tr>
 </table>
 
-### DevOps
+### Server
 <table>
   <tr>
-    <td style="text-align: center;">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker" width="50" height="50"/><br/>
-      Docker
-    </td>
-    <td style="text-align: center;">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub Actions" width="50" height="50"/><br/>
-      GitHub Actions
-    </td>
     <td style="text-align: center;">
       <img src="https://github.com/user-attachments/assets/ef7c942d-fb9a-45ef-9269-f24e6784424e" alt="AWS EC2" width="50" height="50"/><br/>
       AWS EC2
