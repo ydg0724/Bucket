@@ -83,7 +83,7 @@
                 data.forEach(post => {
                     const div = document.createElement('div');
                     div.className = 'post-item';
-                    div.innerHTML = `<b>[${post.exerciseType}] ${post.title}</b> - ${post.uid}`;
+                    div.innerHTML = `<b>[${post.exerciseType}] ${post.title}</b>`;
                     div.onclick = () => location.href = `feedbackDetail.html?id=${post.id}`;
                     list.appendChild(div);
                 });

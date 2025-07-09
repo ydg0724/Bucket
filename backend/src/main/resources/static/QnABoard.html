@@ -71,7 +71,7 @@
 <h1>운동 Q&A 게시판</h1>
 <div class="post-list" id="postList"></div>
 
-<button class="fab" onclick="location.href='writeQna.html'">+</button>
+<button class="fab" onclick="location.href='writeQnA.html'">+</button>
 
 <script>
     function loadPosts() {
@@ -83,8 +83,8 @@
                 data.forEach(post => {
                     const div = document.createElement('div');
                     div.className = 'post-item';
-                    div.innerHTML = `<b>${post.title}</b> - ${post.uid}`;
-                    div.onclick = () => location.href = `qnaDetail.html?id=${post.id}`;
+                    div.innerHTML = `<b>${post.title}</b>`;
+                    div.onclick = () => location.href = `QnADetail.html?id=${post.id}`;
                     list.appendChild(div);
                 });
             });

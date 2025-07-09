@@ -53,7 +53,7 @@
   </div>
 </nav>
 
-<h1>질문 상세보기</h1>
+<h1>질문</h1>
 <div class="content" id="detailContent"></div>
 
 <div style="margin-top: 20px;">
@@ -63,11 +63,11 @@
 
 
 <div class="comment-section">
-  <h3>댓글</h3>
+  <h3>답변</h3>
   <div id="commentList" style="margin-bottom: 20px;"></div>
 
   <textarea id="commentContent" rows="3" style="width:100%; margin-bottom: 10px;" placeholder="댓글을 입력하세요"></textarea>
-  <button class="back-btn" onclick="addComment()">댓글 등록</button>
+  <button class="back-btn" onclick="addComment()">답변 등록</button>
 </div>
 
 <button class="back-btn" onclick="history.back()">뒤로가기</button>
@@ -132,19 +132,19 @@
 
   function addComment() {
     if (!currentUid){
-      alert("댓글 작성은 로그인 후 이용 가능합니다.");
+      alert("답변 작성은 로그인 후 이용 가능합니다.");
       return;
     }
 
     const content = document.getElementById('commentContent').value;
     if (!content) {
-      alert('댓글을 입력하세요.');
+      alert('답변을 입력하세요.');
       return;
     }
     fetch(`/api/comments/QNA/${id}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ uid: currentUid, content })
+      body: JSON.stringify({ content })
     })
             .then(() => {
               document.getElementById('commentContent').value = '';
@@ -208,7 +208,7 @@
   }
 
   function editPost() {
-    location.href = `writeFeedback.html?id=${id}`;  // QnA는 writeQna.html
+    location.href = `writeQnA.html?id=${id}`;  // QnA는 writeQna.html
   }
 
 
